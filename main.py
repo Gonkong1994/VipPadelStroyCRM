@@ -37,10 +37,7 @@ while True:
             print('You havent clients!')
         for client in clients:
             print('=========\n') 
-            client.show_info()
-            print('Price: ',client.total_price())
-            print('Discount: ', client.discount())
-            print('Final price: ', client.final_price())
+            client.print_report()
             print('\n=========')
               
             
@@ -51,10 +48,7 @@ while True:
         for client in clients:
             if ver_name == client.name.lower():
                 print("Client found! \n======")
-                client.show_info()
-                print('Price: ',client.total_price())
-                print('Discount: ', client.discount())
-                print('Final price: ', client.final_price())
+                client.print_report()
                 print('=========')   
                 found = True
                 break
@@ -69,10 +63,7 @@ while True:
         for client in clients:
             if ver_name == client.name.lower():
                 print("Client found! \n======")
-                client.show_info()
-                print('Price: ',client.total_price())
-                print('Discount: ', client.discount())
-                print('Final price: ', client.final_price())
+                client.print_report()
                 
                 print('1 - Change name')
                 print('2 - Add courts')
