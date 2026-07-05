@@ -41,3 +41,9 @@ class Client:
     
     def to_dict(self):
         return{'name' : self.name, 'courts' : self.courts}
+    
+    def print_report(self):
+        self.show_info()
+        print('Price: ',self.total_price())
+        print('Discount: ', self.discount())
+        print('Final price: ', self.final_price())
