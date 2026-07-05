@@ -1,4 +1,4 @@
-PRICE_PER_COURT = 35000
+PRICE_PER_COURT = 38000
 
 class Client:   
     
