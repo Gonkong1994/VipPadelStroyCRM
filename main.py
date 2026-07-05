@@ -1,6 +1,11 @@
 from client import Client
 from storrage import save_clients, load_clients
 
+def find_client(clients, name):
+    for client in clients:
+        if client.name.lower() == name.lower():
+            return client
+
 clients = []
 save_clients(clients)
 
@@ -42,67 +47,50 @@ while True:
               
             
     if choise == "3":
-        ver_name = input("Client name: ").lower()
-        print()
-        found = False
-        for client in clients:
-            if ver_name == client.name.lower():
-                print("Client found! \n======")
-                client.print_report()
-                print('=========')   
-                found = True
-                break
-                
-        if not found:
-            print('Client not found!')
+        client = find_client(clients, input('Client name: '))        
+        if client:
+            client.print_report()
+        else:
+            print('Client not found')
+        
+        
             
     if choise == '4':
-        ver_name = input("Client name: ").lower()
-        print()
-        found = False
-        for client in clients:
-            if ver_name == client.name.lower():
-                print("Client found! \n======")
-                client.print_report()
-                
-                print('1 - Change name')
-                print('2 - Add courts')
-                print('3 - Remove courts')
         
-        
-                edit = input('Enter num 1, 2 or 3: ')
-                if edit == '1':
+        client = find_client(clients, input('Client name: '))
+        if client:
+            print("Client found! \n======")
+            client.print_report()
+            print()
+            print('1 - Change name')
+            print('2 - Add courts')
+            print('3 - Remove courts')
+            edit = input('Enter num 1, 2 or 3: ')
+            
+            if edit == '1':
                     client.change_name(new_name = input('Enter new name: '))
                     client.show_info()
                     save_clients(clients)
                     continue
             
-                if edit == '2':
+            if edit == '2':
                     count = int(input('How many courts to add? '))
                     client.add_courts(count)
                     client.show_info()
                     save_clients(clients)
                     continue
                 
-                if edit == '3':
+            if edit == '3':
                     count = int(input('How many courts do you want to remove? '))               
                     client.remove_courts(count)
                     client.show_info()
                     save_clients(clients)
-                    continue
-                        
-                    
-                        
+                    continue                          
                 
-                print('=========')   
-                found = True
-                break
-                
-        if not found:
-            print('Client not found!')
-            continue
+            print('=========')
             
-        
+        else:
+            print('Client not found')                                                        
             
     if choise == '5':
         print('Bye!!!')
