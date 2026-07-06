@@ -35,7 +35,7 @@ while True:
         client = Client(client_name, count_courts)
         clients.append(client)
         save_clients(clients)
-        print('Client added!')
+        #print('Client added!')
         
     if choise == '2':
         if len(clients) == 0:
