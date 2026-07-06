@@ -5,7 +5,12 @@ clients = []
 def save_clients(clients):
     data = []
     for client in clients:
-        data.append(client.to_dict())
+        if client.name.isalpha():
+            data.append(client.to_dict())
+            #print('Client added!')
+        else:
+            print('Client not added! Please enter Name!')
+            pass
         
     with open('clients.json', 'w') as file:
         json.dump(data,file,indent=4)
