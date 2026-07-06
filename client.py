@@ -6,6 +6,29 @@ class Client:
         self.name = name
         self.courts = courts
         
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, value):
+        if len(value) < 2:
+            print('Name is too short')
+        else:
+            self._name = value
+        
+    @property
+    def courts(self):
+        return self._courts
+    
+    @courts.setter
+    def courts(self, value):
+        if value >= 0:
+            self._courts = value
+        else:
+            print('Courts cant be negative')
+            self._courts = 0
+        
     def show_info(self):
         print('Client: ', self.name)
         print('Courts: ', self.courts)
@@ -31,13 +54,18 @@ class Client:
         self.name = new_name
         
     def add_courts(self, count):
+        if count < self.courts:
+            print('Cant enter negative num!')
+            return
         self.courts += count
         
     def remove_courts(self, count):
-        if self.courts - count >= 0:
-            self.courts -= count
-        else:
+        if count > self.courts:
             print('Can not remove so many courts!!')
+            return
+        self.courts -= count
+        
+            
     
     def to_dict(self):
         return{'name' : self.name, 'courts' : self.courts}
@@ -46,4 +74,4 @@ class Client:
         self.show_info()
         print('Price: ',self.total_price())
         print('Discount: ', self.discount())
-        print('Final price: ', self.final_price())
+        print('Final price: ', self.final_price()) 
