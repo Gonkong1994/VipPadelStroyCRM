@@ -12,10 +12,14 @@ class Client:
     
     @name.setter
     def name(self, value):
+        if not isinstance(value, str):
+            print('Name must be a sring')
+            return
+        
         if len(value) < 2:
             print('Name is too short')
-        else:
-            self._name = value
+        
+        self._name = value
         
     @property
     def courts(self):
@@ -54,7 +58,7 @@ class Client:
         self.name = new_name
         
     def add_courts(self, count):
-        if count < self.courts:
+        if count <= 0:
             print('Cant enter negative num!')
             return
         self.courts += count
