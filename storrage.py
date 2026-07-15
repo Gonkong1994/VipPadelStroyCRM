@@ -10,7 +10,7 @@ def save_clients(clients):
             #print('Client added!')
         else:
             print('Client not added! Please enter Name!')
-            pass
+            
         
     with open('clients.json', 'w') as file:
         json.dump(data,file,indent=4)
