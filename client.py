@@ -1,13 +1,18 @@
+from typing import ClassVar
+from pydantic import BaseModel, Field, field_validator
 
 
-
-class Client:   
+class Client(BaseModel):   
     
-    PRICE_PER_COURT = 38000
-    DISCOUNT_THESHOLD = 3
-    DISCOUNT_PERCENT = 5
-
+    PRICE_PER_COURT: ClassVar[int] = 38000
+    DISCOUNT_THESHOLD: ClassVar[int] = 3
+    DISCOUNT_PERCENT: ClassVar[int] = 5
     
+    name: str = Field(..., min_length = 2, description = 'Client name')
+    courts: int = Field(default = 0, ge = 0, description = 'Count courts')
+    
+
+    """
     def __init__(self, name, courts):
         self.name = name
         self.courts = courts
@@ -37,7 +42,7 @@ class Client:
             self._courts = value
         else:
             raise ValueError('Count courts cant be a nrgative') 
-        
+        """
         
     def total_price(self) -> int:
         return self.courts * self.PRICE_PER_COURT
@@ -69,14 +74,13 @@ class Client:
         if count <= 0:
             raise ValueError('Count must be positive')
         
-        if count > self._courts:
+        if count > self.courts:
             raise ValueError('Cannot remove more courts than client has')
         
         self.courts -= count
                    
     
-    def to_dict(self) -> dict:
-        return{'name' : self.name, 'courts' : self.courts}
+
     
     def __str__(self) -> str:
         return f"Client(name = '{self.name}', courts = {self.courts})"

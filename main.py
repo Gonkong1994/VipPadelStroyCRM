@@ -1,5 +1,6 @@
 from client import Client
 from storrage import save_clients, load_clients
+from pydantic import ValidationError
 
 def find_client(clients, name):
     for client in clients:
@@ -25,16 +26,20 @@ while True:
     if choise not in ('1', '2', '3', '4', '5'):
         print('Unknown command')
         continue
+    
+    try:    
+        if choise == "1":
+                    
+            client_name = input('What is client name? ')
+            count_courts = int(input('How mamy courts? '))
+            
+            client = Client(name = client_name, courts = count_courts)
+            clients.append(client)
+            save_clients(clients)
+            #print('Client added!')
+    except(ValueError, ValidationError) as e:
+        print (f'Error: {e}')
         
-    if choise == "1":
-                   
-        client_name = input('What is client name? ')
-        count_courts = int(input('How mamy courts? '))
-        
-        client = Client(client_name, count_courts)
-        clients.append(client)
-        save_clients(clients)
-        #print('Client added!')
         
     if choise == '2':
         if len(clients) == 0:
@@ -65,24 +70,30 @@ while True:
             print('2 - Add courts')
             print('3 - Remove courts')
             edit = input('Enter num 1, 2 or 3: ')
-            
+           
             if edit == '1':
+                try:
+                    old_name = client_name
                     client.change_name(new_name = input('Enter new name: '))
-                    client.show_info()
+                    client.print_report()
                     save_clients(clients)
-                    continue
+                    
+                except(ValidationError, ValueError) as e:
+                    client_name = old_name
+                    print(f'Error: {e}')
+                continue
             
             if edit == '2':
                     count = int(input('How many courts to add? '))
                     client.add_courts(count)
-                    client.show_info()
+                    client.print_report()
                     save_clients(clients)
                     continue
                 
             if edit == '3':
                     count = int(input('How many courts do you want to remove? '))               
                     client.remove_courts(count)
-                    client.show_info()
+                    client.print_report()
                     save_clients(clients)
                     continue                          
                 

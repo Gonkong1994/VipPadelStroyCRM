@@ -3,13 +3,10 @@ from client import Client
 
 clients = []
 def save_clients(clients):
-    data = []
-    for client in clients:
-        if client.name.isalpha():
-            data.append(client.to_dict())
-            #print('Client added!')
-        else:
-            print('Client not added! Please enter Name!')
+    data = [client.model_dump() for client in clients]
+    
+       
+        
             
         
     with open('clients.json', 'w') as file:
@@ -24,8 +21,8 @@ def load_clients():
             data = json.load(file)
         for item in data:
             client = Client(
-                item['name'],
-                item['courts']                
+                name = item['name'],
+                courts = item['courts']                
             )            
             
             clients.append(client)
