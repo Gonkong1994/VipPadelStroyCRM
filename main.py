@@ -5,9 +5,8 @@ def find_client(clients, name):
     for client in clients:
         if client.name.lower() == name.lower():
             return client
+    return None
 
-clients = []
-save_clients(clients)
 
 while True:
     print()
