@@ -1,28 +1,34 @@
-PRICE_PER_COURT = 38000
+
+
 
 class Client:   
+    
+    PRICE_PER_COURT = 38000
+    DISCOUNT_THESHOLD = 3
+    DISCOUNT_PERCENT = 5
+
     
     def __init__(self, name, courts):
         self.name = name
         self.courts = courts
         
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
     
     @name.setter
     def name(self, value):
         if not isinstance(value, str):
-            print('Name must be a sring')
-            return
+            raise TypeError(f'Name must be a string, not {type(value).__name__}')
         
-        if len(value) < 2:
-            print('Name is too short')
+        if len(value.strip()) < 2:
+            raise ValueError('Name must be at least 2 characters')
         
-        self._name = value
+        
+        self._name = value.strip()
         
     @property
-    def courts(self):
+    def courts(self) -> int:
         return self._courts
     
     @courts.setter
@@ -30,52 +36,59 @@ class Client:
         if value >= 0:
             self._courts = value
         else:
-            print('Courts cant be negative')
-            self._courts = 0
+            raise ValueError('Count courts cant be a nrgative') 
         
-    def show_info(self):
-        print('Client: ', self.name)
-        print('Courts: ', self.courts)
         
-    def total_price(self):
-        return self.courts * PRICE_PER_COURT
+    def total_price(self) -> int:
+        return self.courts * self.PRICE_PER_COURT
         
-    def discount(self):
-        if self.courts >= 3:
-            return 5
+    def discount(self) -> int:
+        if self.courts >= self.DISCOUNT_THESHOLD:
+            return self.DISCOUNT_PERCENT
         else:
             return 0
             
-    def final_price(self):
+    def final_price(self) -> float:
         price = self.total_price()
-        if self.discount() == 5:
-            return price * 0.95
+        if self.discount():
+            return price * (1 - self.DISCOUNT_PERCENT / 100)
             
         else:
             return price
         
-    def change_name(self, new_name):
+    def change_name(self, new_name: str) -> None:
         self.name = new_name
         
-    def add_courts(self, count):
+    def add_courts(self, count: int) -> None:
         if count <= 0:
-            print('Cant enter negative num!')
-            return
+            raise ValueError('Count must be a positive')            
         self.courts += count
         
-    def remove_courts(self, count):
-        if count > self.courts:
-            print('Can not remove so many courts!!')
-            return
-        self.courts -= count
         
-            
+    def remove_courts(self, count: int) -> None:
+        if count <= 0:
+            raise ValueError('Count must be positive')
+        
+        if count > self._courts:
+            raise ValueError('Cannot remove more courts than client has')
+        
+        self.courts -= count
+                   
     
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return{'name' : self.name, 'courts' : self.courts}
     
-    def print_report(self):
-        self.show_info()
-        print('Price: ',self.total_price())
-        print('Discount: ', self.discount())
-        print('Final price: ', self.final_price()) 
+    def __str__(self) -> str:
+        return f"Client(name = '{self.name}', courts = {self.courts})"
+    
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Client):
+            return False
+        return self.name.lower() == other.name.lower()
+    
+    def print_report(self) -> None:
+        print(f'Client : {self.name}')
+        print(f'Courts: {self.courts}')
+        print(f'Price: {self.total_price()}')
+        print(f'Discount: {self.discount()}%')
+        print(f'Final price: {self.final_price()}') 
