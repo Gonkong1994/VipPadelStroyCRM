@@ -31,9 +31,10 @@ while True:
         if choise == "1":
                     
             client_name = input('What is client name? ')
+            phone_number = input('Enter you phone number: ')
             count_courts = int(input('How mamy courts? '))
             
-            client = Client(name = client_name, courts = count_courts)
+            client = Client(name = client_name, courts = count_courts, phone = phone_number)
             clients.append(client)
             save_clients(clients)
             #print('Client added!')
@@ -69,17 +70,18 @@ while True:
             print('1 - Change name')
             print('2 - Add courts')
             print('3 - Remove courts')
-            edit = input('Enter num 1, 2 or 3: ')
+            print('4 - Change phone number')
+            edit = input('Enter num 1, 2, 3 or 4: ')
            
             if edit == '1':
                 try:
-                    old_name = client_name
+                    old_name = client.name
                     client.change_name(new_name = input('Enter new name: '))
                     client.print_report()
                     save_clients(clients)
                     
                 except(ValidationError, ValueError) as e:
-                    client_name = old_name
+                    client.name = old_name
                     print(f'Error: {e}')
                 continue
             
@@ -95,13 +97,23 @@ while True:
                     client.remove_courts(count)
                     client.print_report()
                     save_clients(clients)
-                    continue                          
+                    continue   
+                
+            if edit == '4':
+                try:
+                    old_phone_number = client.phone
+                    client.change_phone(new_phone = input('Enter you new phone number: '))                             
+                    client.print_report()
+                    save_clients(clients)
+                except(ValueError,ValidationError) as e:
+                    client.phone = old_phone_number
+                    print(f'Error: {e}')
+                continue                       
                 
             print('=========')
             
         else:
-            print('Client not found')                                                        
-            
+            print('Client not found')                                                                    
     if choise == '5':
         print('Bye!!!')
         break
