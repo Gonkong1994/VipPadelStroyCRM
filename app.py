@@ -15,6 +15,11 @@ def get_clients():
     clients = load_clients()
     return [client.model_dump() for client in clients]
 
+@app.get("/clients/count")
+def count_clients():
+    clients  = load_clients()
+    return {"total": len(clients)}
+
 @app.get("/clients/{name}")
 def get_client(name: str):
     clients = load_clients()
@@ -46,6 +51,8 @@ def remove_client(name: str):
             save_clients(clients)
             return {"Deleted" : name}
     return {"Error":"Client not found"}
+
+
 
 @app.put("/clients/{name}")
 def edit_client(name:str, courts : int = None, phone: str = None):
