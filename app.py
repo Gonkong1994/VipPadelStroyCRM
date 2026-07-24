@@ -1,10 +1,20 @@
 from fastapi import FastAPI
-from fastapi import Body
+from storrage import Session, ClientDB
 from client import Client
-from storrage import load_clients
-from storrage import save_clients
+
 
 app = FastAPI(title = "VipPadelStroyCRM")
+
+def db_to_pydantic(db_client):
+    if db_client is None:
+        return None
+    return Client(
+        name = db_client.name,
+        courts = db_client.courts,
+        phone = db_client.phone or ""
+        )
+        
+    
 
 @app.get("/")
 def root():
@@ -12,59 +22,71 @@ def root():
 
 @app.get("/clients")
 def get_clients():
-    clients = load_clients()
-    return [client.model_dump() for client in clients]
+    session = Session()
+    db_clients = session.query(ClientDB).all()
+    session.close()
+    return [db_to_pydantic(c).model_dump() for c in db_clients]
 
 @app.get("/clients/count")
 def count_clients():
-    clients  = load_clients()
-    return {"total": len(clients)}
+    session = Session()
+    count = session.query(ClientDB).count()
+    session.close()
+    return {"total": count}
 
 @app.get("/clients/{name}")
 def get_client(name: str):
-    clients = load_clients()
-    for client in clients:
-        if client.name.lower() == name.lower():
-            return client.model_dump()
+    session = Session()
+    db_client = session.query(ClientDB).filter(ClientDB.name == name).first()
+    session.close()
+    if db_client:
+        return db_to_pydantic(db_client).model_dump()
     return {"Error":"Client not found"}
 
 @app.get("/clients/filter/by-courts")
 def filter_clients(min_courts: int = 0):
-    clients = load_clients()
-    result = [c.model_dump() for c in clients if c.courts >= min_courts]
-    return result
+    session = Session()
+    db_clients = session.query(ClientDB).filter(ClientDB.courst >= min_courts).all()
+    session.close()
+    return [db_to_pydantic(c).model_dump() for c in db_clients]
 
-@app.post("/client")
+@app.post("/clients")
 def create_client(name: str, courts: int = 0, phone: str = ""):
-    clients = load_clients()
-    new_client = Client(name = name, courts = courts, phone = phone)
-    clients.append(new_client)
-    save_clients(clients)
-    return new_client.model_dump()
+    session = Session()
+    db_client = ClientDB(name = name, courts = courts, phone = phone)
+    session.add(db_client)
+    session.commit()
+    result = db_to_pydantic(db_client).model_dump()
+    session.close()
+    return result
 
 @app.delete("/clients/{name}")
 def remove_client(name: str):
-    clients = load_clients()
-    for client in clients:
-        if client.name.lower() == name.lower():
-            clients.remove(client)
-            save_clients(clients)
-            return {"Deleted" : name}
-    return {"Error":"Client not found"}
+    session = Session()
+    db_client = session.query(ClientDB).filter(ClientDB.name == name).first()
+    if db_client:
+        session.delete(db_client)
+        session.commit()
+        session.close()
+        return {"deleted" : name}
+    session.close()
+    return {"error":"Client not found"}
 
 
 
 @app.put("/clients/{name}")
 def edit_client(name:str, courts : int = None, phone: str = None):
-    clients = load_clients()
-    for client in clients:
-        if client.name.lower() == name.lower():
-            if courts is not None:
-                client.courts = courts
-                
-            if phone is not None:
-                client.phone = phone
-                
-            save_clients(clients)
-            return client.model_dump()
-    return {"Error":"Client not found"}  
+    session = Session()
+    db_client = session.query(ClientDB).filter(ClientDB.name == name).first()
+    if db_client:
+        if courts is not None:
+            db_client.courts = courts
+        
+        if phone is not None:
+            db_client.phone = phone
+        session.commit()
+        result = db_to_pydantic(db_client).model_dump()
+        session.close()
+        return result
+    session.close()
+    return {"error":"Client not found"}
