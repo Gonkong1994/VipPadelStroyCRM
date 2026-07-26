@@ -1,15 +1,17 @@
-# Tennis Club Manager 🎾
+# VipPadelStroy CRM 🎾
 
-Приложение для управления клиентами теннисного клуба. Создано в процессе подготовки к первой работе Python-разработчиком.
+REST API для управления клиентами теннисного клуба.
 
-## 🛠 Стек технологий
+## 🛠 Стек
 
-- Python 3.11+
-- JSON (хранение данных)
-- В плане: FastAPI, PostgreSQL, Docker
+- **Python 3.11** + **FastAPI**
+- **Pydantic** (валидация данных)
+- **PostgreSQL** + **SQLAlchemy ORM**
+- **Docker** + **Docker Compose**
 
-## 📂 Структура проекта
-├── client.py # Класс Client (модель данных)
-├── storage.py # Сохранение/загрузка клиентов (JSON)
-├── main.py # Консольное меню (CLI)
-└── clients.json # Файл с данными клиентов
+## 🚀 Быстрый запуск
+
+```bash
+git clone https://github.com/Gonkong1994/VipPadelStroyCRM.git
+cd VipPadelStroyCRM
+docker compose up
